@@ -173,7 +173,6 @@ function NotificationLibrary:Notify(options)
 	dismissText.TextXAlignment = Enum.TextXAlignment.Left
 	dismissText.Parent = content
 
-	-- Clean, inset progress bar contained completely within the padding area
 	local progressTrack = Instance.new("Frame")
 	progressTrack.Name = "ProgressTrack"
 	progressTrack.Size = UDim2.new(1, 0, 0, 4)
@@ -197,7 +196,6 @@ function NotificationLibrary:Notify(options)
 	fillCorner.CornerRadius = UDim.new(1, 0)
 	fillCorner.Parent = progressFill
 
-	-- Calculate structural frame height factoring the inset track layout plus padding boundaries
 	local totalHeight = 16 + (24 + textBounds.Y + 10 + 16 + 14 + 4) + 16
 	notification.Size = UDim2.new(1, 40, 0, totalHeight)
 
