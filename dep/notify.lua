@@ -6,6 +6,7 @@
 --notification library
 
 --[[
+
 example usage:
 
 local notifier = loadstring(game:HttpGet("https://raw.githubusercontent.com/justirib/thunder/refs/heads/main/dep/notify.lua"))()
