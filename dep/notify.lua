@@ -1,9 +1,41 @@
---___________               _________            
---__  /___  /_____  ______________  /____________
+--___________                 _________            
+--__   /___  /_____  ______________  /____________
 --_  __/_  __ \  / / /_  __ \  __  /_  _ \_  ___/
 --/ /_ _  / / / /_/ /_  / / / /_/ / /  __/  /    
 --\__/ /_/ /_/\__,_/ /_/ /_/\__,_/  \___//_/     by irib
 --notification library
+
+--[[
+example usage:
+
+local notifier = loadstring(game:HttpGet("https://raw.githubusercontent.com/justirib/thunder/refs/heads/main/dep/notify.lua"))()
+
+notifier:Notify({  -- stan
+	Title = "Title",
+	Description = "This is a notif from thunder's notify.lua",
+	Duration = 5
+})
+
+task.wait(1.5)
+
+notifier:Notify({ -- notificationwith an icon 
+	Title = "Authorised Session",
+	Description = "Permission granted by authentication server.",
+	Duration = 8,
+	Icon = "rbxassetid://6023426926" 
+})
+
+task.wait(2)
+
+-- a long desc to demonstrate the lib's dynamicality
+notifier:Notify({
+	Title = "TOS Updated!",
+	Description = "Our Terms of Service has been updated. This update brings data policy changes, licensing changes and more. For the full details, check out discord server. The link has been copied to your clipboard.",
+	Duration = 10,
+	Icon = "rbxassetid://6022668888"
+})
+
+]]
 
 local NotificationLibrary = {}
 
@@ -73,7 +105,7 @@ function NotificationLibrary:Notify(options)
 	uiStroke.Parent = notification
 
 	local content = Instance.new("Frame")
-	content.Size = UDim2.new(1, 0, 1, -4)
+	content.Size = UDim2.new(1, 0, 1, 0)
 	content.BackgroundTransparency = 1
 	content.Parent = notification
 
@@ -131,7 +163,7 @@ function NotificationLibrary:Notify(options)
 
 	local dismissText = Instance.new("TextLabel")
 	dismissText.Size = UDim2.new(1, -layoutOffset, 0, 16)
-	dismissText.Position = UDim2.new(0, layoutOffset, 0, 24 + textBounds.Y + 12)
+	dismissText.Position = UDim2.new(0, layoutOffset, 0, 24 + textBounds.Y + 10)
 	dismissText.BackgroundTransparency = 1
 	dismissText.Font = Enum.Font.Gotham
 	dismissText.Text = "Click to dismiss"
@@ -141,21 +173,33 @@ function NotificationLibrary:Notify(options)
 	dismissText.TextXAlignment = Enum.TextXAlignment.Left
 	dismissText.Parent = content
 
-	local totalHeight = 16 + 24 + textBounds.Y + 12 + 16 + 16
-	notification.Size = UDim2.new(1, 40, 0, totalHeight)
-
+	-- Clean, inset progress bar contained completely within the padding area
 	local progressTrack = Instance.new("Frame")
-	progressTrack.Size = UDim2.new(1, 0, 0, 3)
-	progressTrack.Position = UDim2.new(0, 0, 1, -3)
+	progressTrack.Name = "ProgressTrack"
+	progressTrack.Size = UDim2.new(1, 0, 0, 4)
+	progressTrack.Position = UDim2.new(0, 0, 0, 24 + textBounds.Y + 10 + 16 + 14)
 	progressTrack.BackgroundColor3 = Color3.fromRGB(39, 39, 42)
 	progressTrack.BorderSizePixel = 0
-	progressTrack.Parent = notification
+	progressTrack.Parent = content
+
+	local trackCorner = Instance.new("UICorner")
+	trackCorner.CornerRadius = UDim.new(1, 0)
+	trackCorner.Parent = progressTrack
 
 	local progressFill = Instance.new("Frame")
+	progressFill.Name = "ProgressFill"
 	progressFill.Size = UDim2.new(1, 0, 1, 0)
 	progressFill.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 	progressFill.BorderSizePixel = 0
 	progressFill.Parent = progressTrack
+
+	local fillCorner = Instance.new("UICorner")
+	fillCorner.CornerRadius = UDim.new(1, 0)
+	fillCorner.Parent = progressFill
+
+	-- Calculate structural frame height factoring the inset track layout plus padding boundaries
+	local totalHeight = 16 + (24 + textBounds.Y + 10 + 16 + 14 + 4) + 16
+	notification.Size = UDim2.new(1, 40, 0, totalHeight)
 
 	local isDismissed = false
 
@@ -173,7 +217,7 @@ function NotificationLibrary:Notify(options)
 		TweenService:Create(uiStroke, TWEEN_OUT, {Transparency = 1}):Play()
 		TweenService:Create(progressFill, TWEEN_OUT, {BackgroundTransparency = 1}):Play()
 		TweenService:Create(progressTrack, TWEEN_OUT, {BackgroundTransparency = 1}):Play()
-		
+
 		if iconId then
 			TweenService:Create(content:FindFirstChildOfClass("ImageLabel"), TWEEN_OUT, {ImageTransparency = 1}):Play()
 		end
